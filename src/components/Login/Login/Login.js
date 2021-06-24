@@ -4,6 +4,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useHistory, useLocation } from 'react-router-dom';
 import swal from 'sweetalert';
 import { context } from '../../../App';
+import useForm from '../../../hooks/useForm';
 import googleIcon from '../../../images/google.svg';
 import Navbar from '../../Shared/Navbar/Navbar';
 import { createUser, googleLogin, signingUser } from '../authManager';
@@ -11,82 +12,52 @@ import './Login.css';
 
 const Login = () => {
 
-    const { setLoggedInUser } = useContext(context);
+    const { setLoggedInUser, setAdminLoaded } = useContext(context);
 
     const [newUser, setNewUser] = useState(false);
 
     const [showPassword, setShowPassword] = useState(false);
 
-    const [inputData, setInputData] = useState({});
-
-    const [error, setError] = useState({});
-
     const history = useHistory();
 
     const location = useLocation();
+
+    let required = ['name', 'email', 'password', 'confirmPassword'];
+
+    if(!newUser){
+        required = ['email', 'password'];
+    }
+
+    const { handleInput, handleSubmit, error } = useForm(required);
 
     const { from } = location.state || { from: { pathname: "/" } };
 
     const handleShowPassword = () => setShowPassword(preValue=> !preValue);
 
-    const handleInput = (e, name) => {
-        const { value } = e.target;
-        if (name==='email') {
-            const isValid = /\S+@\S+\.\S+/.test(value);
-            if (isValid) {
-                const newError = {...error};
-                newError[name] = false;
-                setError(newError);
-            }
-            else {
-                const newError = {...error};
-                newError[name] = true;
-                setError(newError);
-            }
-        }
-        else if (name==='password') {
-            const isValid = value.length>=6;
-            if (isValid) {
-                const newError = {...error};
-                newError[name] = false;
-                setError(newError);
-            }
-            else {
-                const newError = {...error};
-                newError[name] = true;
-                setError(newError);
-            }
-        }
-        else if (name==='confirmPassword') {
-            const isValid = value.length>=6;
-            const match = inputData.password === value;
-            if (isValid&&match) {
-                const newError = {...error};
-                newError[name] = false;
-                setError(newError);
-            }
-            else {
-                const newError = {...error};
-                newError[name] = true;
-                setError(newError);
-            }
-        }
-        else if (value.length<1) {
-            const newError = {...error};
-            newError[name] = true;
-            setError(newError);
+    const submit = inputData => {
+        const { email, password, name } = inputData;
+        if (newUser){
+            toast.promise(
+            createUser(email, password, name)
+            .then(user => setUser(user)),
+            {
+                loading: 'Loading...',
+                success: <b>Loading Finished</b>
+            })
         }
         else{
-            const newError = {...error};
-            newError[name] = false;
-            setError(newError);
+            toast.promise(
+            signingUser(email, password)
+            .then(user => setUser(user)),
+            {
+                loading: 'Loading...',
+                success: <b>Loading Finished</b>
+            })
         }
-        const newInputData = {...inputData}
-        newInputData[name] = value;
-        setInputData(newInputData);
     }
 
     const setUser = user => {
+        setAdminLoaded(false);
         if(!user.message){
             setLoggedInUser(user);
             history.replace(from);
@@ -94,51 +65,6 @@ const Login = () => {
         }
         else{
             swal("Error", user.message, "error");
-        }
-    }
-
-    const handleSubmit = e => {
-        e.preventDefault();
-        const { email, password, name, confirmPassword } = inputData;
-        const errorData = Object.values(error);
-        const found = errorData.find(data => data===true);
-        const login = !error.password&&!error.email;
-        if (newUser){
-            if (errorData.length===4&&!found) {
-                toast.promise(
-                createUser(email, password, name)
-                .then(user => setUser(user)),
-                {
-                    loading: 'Loading...',
-                    success: <b>Loading Finished</b>
-                })
-                e.target.reset();
-            }
-        }
-        else{
-            if (email&&password&&login) {
-                toast.promise(
-                signingUser(email, password)
-                .then(user => setUser(user)),
-                {
-                    loading: 'Loading...',
-                    success: <b>Loading Finished</b>
-                })
-                e.target.reset();
-            }
-        }
-
-        if (!email) {
-            setError(previousError => ({...previousError, email: true}));
-        }
-        if (!password) {
-            setError(previousError => ({...previousError, password: true}));
-        }
-        if (!name){
-            setError(previousError => ({...previousError, name: true}));
-        }
-        if (!confirmPassword){
-            setError(previousError => ({...previousError, confirmPassword: true}));
         }
     }
 
@@ -164,7 +90,7 @@ const Login = () => {
                         alt="retro-blog"
                     />
                     <h2 className="text-center text-3xl font-extrabold text-gray-900">{newUser?"Create An Account":"Sign in"}</h2>
-                    <form onSubmit={handleSubmit} className="mt-8 space-y-6" action="#" method="POST">
+                    <form onSubmit={handleSubmit(submit)} className="mt-8 space-y-6" action="#" method="POST">
                         <input type="hidden" name="remember" defaultValue="true" />
                         <div className="">
                            {newUser&&
@@ -174,7 +100,7 @@ const Login = () => {
                                 autoComplete="user-name"
                                 className="block w-full p-3 border-b-2 border-gray-600 rounded-md placeholder-gray-500 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                 placeholder="Name"
-                                onChange={e => handleInput(e, 'name')}
+                                onChange={handleInput}
                             />}
                             {newUser&&error.name&&<span className="text-red-500 ml-2 mt-2 block">Name is Required</span>}
                             <input
@@ -183,7 +109,7 @@ const Login = () => {
                                 autoComplete="email"
                                 className="mt-5 block w-full p-3 border-b-2 border-gray-600 rounded-md placeholder-gray-500 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                 placeholder="Email address"
-                                onChange={e => handleInput(e, 'email')}
+                                onChange={handleInput}
                             />
                             {error.email&&<span className="text-red-500 block mt-2 ml-2">Valid email is Required</span>}
                             <div className="relative">
@@ -193,7 +119,7 @@ const Login = () => {
                                 autoComplete="current-password"
                                 className="mt-5 block w-full p-3 border-b-2 border-gray-600 rounded-md placeholder-gray-500 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                 placeholder="Password"
-                                onChange={e => handleInput(e, 'password')}
+                                onChange={handleInput}
                             />
                             {   showPassword?
                                 <EyeIcon onClick={handleShowPassword} className="h-6 w-6 absolute top-1/2 transform -translate-y-2/4 right-1 z-50 text-indigo-500 group-hover:text-indigo-400 cursor-pointer" aria-hidden="true" />
@@ -209,7 +135,7 @@ const Login = () => {
                                 autoComplete="current-password"
                                 className="mt-5 block w-full p-3 border-b-2 border-gray-600 rounded-md placeholder-gray-500 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                 placeholder="Confirm Password"
-                                onChange={e => handleInput(e, 'confirmPassword')}
+                                onChange={handleInput}
                                 />
                                 {
                                 showPassword?

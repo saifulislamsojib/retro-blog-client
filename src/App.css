@@ -1,3 +1,28 @@
 body {
   font-family: "Poppins", sans-serif !important;
 }
+
+.sidebar {
+  width: 19.5%;
+}
+
+.sidebar-active {
+  position: relative;
+}
+
+.sidebar-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 8px;
+  background-color: rgb(195, 195, 195);
+  border-radius: 1px;
+}
+
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 250px;
+  }
+}

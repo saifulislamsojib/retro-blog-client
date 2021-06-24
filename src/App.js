@@ -17,6 +17,10 @@ function App() {
 
   const [loading, setLoading] = useState(true);
 
+  const [adminLoaded, setAdminLoaded] = useState(false);
+
+  const [isAdmin, setIsAdmin] = useState(false);
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user=> {
       if (user){
@@ -34,7 +38,11 @@ function App() {
   const contextData = {
     loggedInUser,
     setLoggedInUser,
-    loading
+    loading,
+    isAdmin,
+    setIsAdmin,
+    adminLoaded,
+    setAdminLoaded
   }
 
   return (
