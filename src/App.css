@@ -21,8 +21,54 @@ body {
   border-radius: 1px;
 }
 
+.table-outer {
+  overflow-x: auto;
+}
+
+table {
+  min-width: 450px !important;
+}
+
+.ReactModal__Content {
+  min-width: 600px;
+}
+
+.blog-content {
+  min-height: 60vh;
+}
+
 @media (max-width: 1024px) {
   .sidebar {
     width: 250px;
+  }
+}
+
+@media (max-width: 750px) {
+  .ReactModal__Content {
+    min-width: 500px;
+  }
+}
+
+@media (max-width: 515px) {
+  .ReactModal__Content {
+    min-width: 450px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ReactModal__Content {
+    min-width: 400px;
+  }
+}
+
+@media (max-width: 420px) {
+  .ReactModal__Content {
+    min-width: 350px;
+  }
+}
+
+@media (max-width: 370px) {
+  .ReactModal__Content {
+    min-width: 97%;
   }
 }

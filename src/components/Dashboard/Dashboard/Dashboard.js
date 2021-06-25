@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Route, Switch, useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import { context } from '../../../App';
 import Spinner from '../../../images/spinner-loader.gif';
+import Navbar from '../../Shared/Navbar/Navbar';
 import AddBlog from '../AddBlog/AddBlog';
 import ManageAdmin from '../ManageAdmin/ManageAdmin';
 import ManageBlog from '../ManageBlog/ManageBlog';
@@ -47,7 +48,8 @@ const Dashboard = () => {
            {
                loading?
                <img className="h-64 block mx-auto mt-10 rounded-full" src={Spinner} alt="" />
-               :<div className="lg:grid lg:grid-cols-5 lg:gap-4 mx-1">
+               :isAdmin?
+               <div className="lg:grid lg:grid-cols-5 lg:gap-4 mx-1">
                    <div>
                         <Sidebar url={url} handleToggler={handleToggler} navbarToggler={navbarToggler} />
                    </div>
@@ -74,10 +76,10 @@ const Dashboard = () => {
                         </Switch>
                    </div>
                </div>
-            //    :<div className="text-center">
-            //        <Navbar />
-            //        <h2 className="text-red-500 mt-8 text-3xl font-medium">You Are Not Authorized!</h2>
-            //    </div>
+               :<div className="text-center">
+                   <Navbar />
+                   <h2 className="text-red-500 mt-8 text-3xl font-medium">You Are Not Authorized!</h2>
+               </div>
 
            }
         </div>

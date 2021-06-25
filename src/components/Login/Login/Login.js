@@ -90,7 +90,7 @@ const Login = () => {
                         alt="retro-blog"
                     />
                     <h2 className="text-center text-3xl font-extrabold text-gray-900">{newUser?"Create An Account":"Sign in"}</h2>
-                    <form onSubmit={handleSubmit(submit)} className="mt-8 space-y-6" action="#" method="POST">
+                    <form onSubmit={handleSubmit(submit)} className="mt-8 space-y-6" >
                         <input type="hidden" name="remember" defaultValue="true" />
                         <div className="">
                            {newUser&&

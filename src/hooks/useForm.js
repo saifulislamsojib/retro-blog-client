@@ -1,12 +1,12 @@
 import { useState } from "react";
 
-const useForm = required => {
+const useForm = (required=[]) => {
     const [inputData, setInputData] = useState({});
 
     const [error, setError] = useState({});
 
     const handleInput = e => {
-        const { value, name } = e.target;
+        const { value, name, files } = e.target;
         const req = required.indexOf(name)!==-1;
         if (req&&name==='email') {
             const isValid = /\S+@\S+\.\S+/.test(value);
@@ -59,7 +59,7 @@ const useForm = required => {
             setError(newError);
         }
         const newInputData = {...inputData}
-        newInputData[name] = value;
+        newInputData[name] = name==='image'?files[0]:value;
         setInputData(newInputData);
     }
 
@@ -74,6 +74,7 @@ const useForm = required => {
         if (!filtered.length){
             submit(inputData);
             e.target.reset();
+            setInputData({});
         }
     }
 

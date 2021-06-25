@@ -3,6 +3,7 @@ import {
   BrowserRouter as Router, Route, Switch
 } from "react-router-dom";
 import './App.css';
+import BlogDetails from "./components/BlogDetails/BlogDetails";
 import Dashboard from "./components/Dashboard/Dashboard/Dashboard";
 import Home from './components/Home/Home/Home';
 import { auth, setUser } from "./components/Login/authManager";
@@ -20,6 +21,14 @@ function App() {
   const [adminLoaded, setAdminLoaded] = useState(false);
 
   const [isAdmin, setIsAdmin] = useState(false);
+
+  const [blogs, setBlogs] = useState([]);
+
+    useEffect(() => {
+        fetch('https://retro-blog.herokuapp.com/blogs')
+        .then(res => res.json())
+        .then(data => setBlogs(data))
+    }, [])
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user=> {
@@ -42,7 +51,9 @@ function App() {
     isAdmin,
     setIsAdmin,
     adminLoaded,
-    setAdminLoaded
+    setAdminLoaded,
+    blogs,
+    setBlogs
   }
 
   return (
@@ -57,6 +68,9 @@ function App() {
           </PrivateRoute>
           <Route path="/login">
             <Login />
+          </Route>
+          <Route path="/details/:id">
+            <BlogDetails />
           </Route>
         </Switch>
       </Router>
