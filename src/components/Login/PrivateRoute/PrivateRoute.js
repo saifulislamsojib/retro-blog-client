@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { context } from '../../../App';
+import Spinner from '../../Shared/Spinner/Spinner';
 
 const PrivateRoute = ({ children, ...rest }) => {
 
@@ -8,7 +9,7 @@ const PrivateRoute = ({ children, ...rest }) => {
 
     return (
         <>
-        {loading?'Loading...'
+        {loading?<Spinner />
         :<Route
         {...rest}
         render={({ location }) =>

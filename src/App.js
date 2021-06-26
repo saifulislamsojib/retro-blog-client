@@ -24,6 +24,8 @@ function App() {
 
   const [blogs, setBlogs] = useState([]);
 
+  const [loaded, setLoaded] = useState(false);
+
     useEffect(() => {
         fetch('https://retro-blog.herokuapp.com/blogs')
         .then(res => res.json())
@@ -31,18 +33,22 @@ function App() {
     }, [])
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user=> {
-      if (user){
-        const newUser = setUser(user);
-        setLoggedInUser(newUser);
-        setLoading(false);
-      }
-      else{
-        setLoading(false);
-      }
-    })
-    return unsubscribe;
-  }, [])
+    if (!loaded) {
+      const unsubscribe = auth.onAuthStateChanged(user=> {
+        if (user){
+          const newUser = setUser(user);
+          setLoggedInUser(newUser);
+          setLoading(false);
+          setLoaded(true);
+        }
+        else{
+          setLoading(false);
+          setLoaded(true);
+        }
+      })
+      return unsubscribe;
+    }
+  }, [loaded])
 
   const contextData = {
     loggedInUser,

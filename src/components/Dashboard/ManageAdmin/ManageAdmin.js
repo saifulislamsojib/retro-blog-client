@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import swal from 'sweetalert';
 import useForm from '../../../hooks/useForm';
+import Spinner from '../../Shared/Spinner/Spinner';
 import ReactModal from '../ReactModal/ReactModal';
 
 const ManageAdmin = () => {
@@ -53,7 +54,9 @@ const ManageAdmin = () => {
                 Add Admin
             </button>
             
-            <div className="table-outer">
+            {admins.length===0?
+            <Spinner />
+            :<div className="table-outer">
                 <table className='table-auto border-collapse border mx-auto mt-5 table-auto overflow-auto'>
                     <thead>
                         <tr>
@@ -74,7 +77,7 @@ const ManageAdmin = () => {
                         }
                     </tbody>
                 </table>
-            </div>
+            </div>}
 
             <ReactModal modalIsOpen={modalIsOpen} setIsOpen={setIsOpen}>
                 <form className="" onSubmit={handleSubmit(submit)}>

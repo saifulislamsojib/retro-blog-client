@@ -2,8 +2,8 @@ import { MenuIcon } from '@heroicons/react/outline';
 import React, { useContext, useEffect, useState } from 'react';
 import { Route, Switch, useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import { context } from '../../../App';
-import Spinner from '../../../images/spinner-loader.gif';
 import Navbar from '../../Shared/Navbar/Navbar';
+import Spinner from '../../Shared/Spinner/Spinner';
 import AddBlog from '../AddBlog/AddBlog';
 import ManageAdmin from '../ManageAdmin/ManageAdmin';
 import ManageBlog from '../ManageBlog/ManageBlog';
@@ -47,7 +47,7 @@ const Dashboard = () => {
         <div>
            {
                loading?
-               <img className="h-64 block mx-auto mt-10 rounded-full" src={Spinner} alt="" />
+               <Spinner />
                :isAdmin?
                <div className="lg:grid lg:grid-cols-5 lg:gap-4 mx-1">
                    <div>

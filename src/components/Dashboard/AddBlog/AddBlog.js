@@ -14,7 +14,7 @@ const AddBlog = () => {
     const { loggedInUser, setBlogs } = useContext(context);
 
     const submit = data => {
-        const blogData = {...data, image: imageUrl, author: loggedInUser.name, date: Date().toDateString(), time: new Date().toTimeString()}
+        const blogData = {...data, image: imageUrl, author: loggedInUser.name, date: new Date().toDateString(), time: new Date().toTimeString(), likes: []}
         toast.promise(
             fetch('https://retro-blog.herokuapp.com/addBlog', {
                 method: 'POST',
