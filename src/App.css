@@ -3,6 +3,7 @@ body {
 }
 
 .sidebar {
+  min-width: 220px;
   width: 19.5%;
 }
 
