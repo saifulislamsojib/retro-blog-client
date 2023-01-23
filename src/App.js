@@ -1,11 +1,9 @@
 import { createContext, useEffect, useState } from "react";
-import {
-  BrowserRouter as Router, Route, Switch
-} from "react-router-dom";
-import './App.css';
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import "./App.css";
 import BlogDetails from "./components/BlogDetails/BlogDetails";
 import Dashboard from "./components/Dashboard/Dashboard/Dashboard";
-import Home from './components/Home/Home/Home';
+import Home from "./components/Home/Home/Home";
 import { auth, setUser } from "./components/Login/authManager";
 import Login from "./components/Login/Login/Login";
 import PrivateRoute from "./components/Login/PrivateRoute/PrivateRoute";
@@ -13,7 +11,6 @@ import PrivateRoute from "./components/Login/PrivateRoute/PrivateRoute";
 export const context = createContext();
 
 function App() {
-
   const [loggedInUser, setLoggedInUser] = useState({});
 
   const [loading, setLoading] = useState(true);
@@ -26,29 +23,28 @@ function App() {
 
   const [loaded, setLoaded] = useState(false);
 
-    useEffect(() => {
-        fetch('https://retro-blog.herokuapp.com/blogs')
-        .then(res => res.json())
-        .then(data => setBlogs(data))
-    }, [])
+  useEffect(() => {
+    fetch("https://retro-blog-server.vercel.app/blogs")
+      .then((res) => res.json())
+      .then((data) => setBlogs(data));
+  }, []);
 
   useEffect(() => {
     if (!loaded) {
-      const unsubscribe = auth.onAuthStateChanged(user=> {
-        if (user){
+      const unsubscribe = auth.onAuthStateChanged((user) => {
+        if (user) {
           const newUser = setUser(user);
           setLoggedInUser(newUser);
           setLoading(false);
           setLoaded(true);
-        }
-        else{
+        } else {
           setLoading(false);
           setLoaded(true);
         }
-      })
+      });
       return unsubscribe;
     }
-  }, [loaded])
+  }, [loaded]);
 
   const contextData = {
     loggedInUser,
@@ -59,8 +55,8 @@ function App() {
     adminLoaded,
     setAdminLoaded,
     blogs,
-    setBlogs
-  }
+    setBlogs,
+  };
 
   return (
     <context.Provider value={contextData}>
